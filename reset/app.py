@@ -55,8 +55,9 @@ def index():
     global dc, domain
     pythoncom.CoInitialize()
     if request.method == "GET":
-        return render_template('index.html')
-
+            response = make_response(render_template('index.html'))
+            response.set_cookie('access_token', "")
+            return response
     else:
         username = request.form.get("username")
         password = request.form.get("password")
