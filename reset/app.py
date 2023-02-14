@@ -9,9 +9,8 @@ import pythoncom
 
 dc = '192.168.66.5'
 domain = "lab.com"
-# user = "Administrator"
-# password = "Bubiman10!"
 
+https://yunkgao.wordpress.com/2021/11/17/deploy-a-python-flask-application-in-iis-server-and-run-on-machine-ip-address/#:~:text=Inside%20FlaskApp%20folder%2C%20create%20the,file%20%E2%80%9Capp.py%E2%80%9D.&text=Now%2C%20copy%20the%20%E2%80%9Cwfastcgi.,wwwroot%5CFlaskApp%5C%E2%80%9D%20directory.&text=Now%2C%20as%20the%20permissions%20are,application%20in%20the%20IIS%20server.
 
 def check_password(dc, domain, user, password):
     server = Server(dc, get_info=ALL)

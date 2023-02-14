@@ -2,3 +2,4 @@ pyad
 flask
 PyJWT
 ldap3
+wfastcgi
