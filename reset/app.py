@@ -5,12 +5,17 @@ import jwt
 from ldap3 import Server, Connection, ALL, NTLM
 from functools import wraps
 import pythoncom
+import threading
+import datetime
 
 
 dc = '192.168.66.5'
 domain = "lab.com"
 
-https://yunkgao.wordpress.com/2021/11/17/deploy-a-python-flask-application-in-iis-server-and-run-on-machine-ip-address/#:~:text=Inside%20FlaskApp%20folder%2C%20create%20the,file%20%E2%80%9Capp.py%E2%80%9D.&text=Now%2C%20copy%20the%20%E2%80%9Cwfastcgi.,wwwroot%5CFlaskApp%5C%E2%80%9D%20directory.&text=Now%2C%20as%20the%20permissions%20are,application%20in%20the%20IIS%20server.
+# https://yunkgao.wordpress.com/2021/11/17/deploy-a-python-flask-application-in-iis-server-and-run-on-machine-ip-address/#:~:text=Inside%20FlaskApp%20folder%2C%20create%20the,file%20%E2%80%9Capp.py%E2%80%9D.&text=Now%2C%20copy%20the%20%E2%80%9Cwfastcgi.,wwwroot%5CFlaskApp%5C%E2%80%9D%20directory.&text=Now%2C%20as%20the%20permissions%20are,application%20in%20the%20IIS%20server.
+
+
+
 
 def check_password(dc, domain, user, password):
     server = Server(dc, get_info=ALL)
@@ -82,6 +87,7 @@ def change_password():
     else:
         pythoncom.CoInitialize()
         user = get_user_from_token()
+        print(user)
         password = request.form.get("password")
         repeat = request.form.get("repeat")
 
@@ -89,7 +95,7 @@ def change_password():
             q = pyad.adquery.ADQuery()
             q.execute_query(
                 attributes=["cn"],
-                where_clause="sAMAccountName = 'sdaini'",
+                where_clause="sAMAccountName = '{}'".format(user),
                 base_dn="CN=users,DC=lab,DC=com"
             )
             cn = None
@@ -97,13 +103,15 @@ def change_password():
                 cn = row["cn"]
                     
             ad_user = pyad.aduser.ADUser.from_cn(cn)
+            print(ad_user)
             try:
-                ad_user.set_password(password)
+                a = ad_user.set_password(password)
+                print(a)
                 flash("Password Updated", "success")
                 response = make_response(redirect(url_for('index')))
                 return response
             except Exception as e:
-                flash("Error", "error")
+                flash(e, "error")
                 return render_template('change_password.html')
         else:
             flash("Password must be equal", "error")

@@ -1,22 +1,15 @@
 import pyad.adquery
 import pyad.aduser
 
+# Configurazione della query
+user = "sdaini"
 q = pyad.adquery.ADQuery()
-
 q.execute_query(
-    attributes=["cn"],
-    where_clause="sAMAccountName = 'sdaini'",
+    attributes=["cn", "DistinguishedName", "UserPrincipalName"],
     base_dn="CN=users,DC=lab,DC=com"
 )
 
-cn = None
+# Iterazione sugli utenti trovati
 for row in q.get_results():
-    cn = row["cn"]
-        
-
-ad_user = pyad.aduser.ADUser.from_cn(cn)
-try:
-    ad_user.set_password("Bubiman10!!")
-    print("password Aggiornata")
-except Exception as e:
-    print(e)
+    if row["UserPrincipalName"] is not None and "@" in row["UserPrincipalName"]:
+        print(row)

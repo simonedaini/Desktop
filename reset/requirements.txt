@@ -3,3 +3,4 @@ flask
 PyJWT
 ldap3
 wfastcgi
+pywin32
